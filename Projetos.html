@@ -1,12 +1,62 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Primeiro Projeto</title>
-</head>
-<body>
-    <h1>Olá, GitHub!</h1>
-    <p>Este é o meu primeiro projeto no GitHub!</p>
-</body>
-</html>
+import { useState } from "react";
+
+export default function WhatsAppMessenger() {
+  const [clients, setClients] = useState([
+    { name: "João", phone: "5598999999999" },
+    { name: "Maria", phone: "5598111111111" },
+  ]);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  const sendWhatsAppMessage = () => {
+    if (!selectedClient || !date || !time) {
+      alert("Por favor, selecione um cliente, data e horário.");
+      return;
+    }
+    const message = `Olá, ${selectedClient.name}! 🐾\n\nSeu pet tem um banho agendado conosco! ✨\n\n📅 *Data:* ${date}\n🕒 *Horário:* ${time}\n💰 *Valor:* R$80,00\n📍 *Local:* Rua Exemplo, 123 - Bairro\n\nSeu pet receberá um banho completo com produtos de alta qualidade.\n\n*Nossos cuidados incluem:*\n✅ Pré-lavagem para remoção de sujeira\n✅ Shampoo duplo para higienização profunda\n✅ Máscara hidratante para brilho e maciez\n✅ Condicionador para suavidade e desembaraço\n\nAguardamos vocês! 🛁🐶✨`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappLink = `https://wa.me/${selectedClient.phone}?text=${encodedMessage}`;
+    window.open(whatsappLink, "_blank");
+  };
+
+  return (
+    <div className="p-6 max-w-lg mx-auto bg-white rounded-xl shadow-md space-y-4">
+      <h1 className="text-xl font-bold text-center">Envio Automático de WhatsApp</h1>
+      <label className="block">Selecione o Cliente:</label>
+      <select
+        className="w-full p-2 border rounded"
+        onChange={(e) =>
+          setSelectedClient(clients.find((c) => c.phone === e.target.value))
+        }
+      >
+        <option value="">Escolha um cliente</option>
+        {clients.map((client) => (
+          <option key={client.phone} value={client.phone}>
+            {client.name}
+          </option>
+        ))}
+      </select>
+      <label className="block">Data do Agendamento:</label>
+      <input
+        type="date"
+        className="w-full p-2 border rounded"
+        onChange={(e) => setDate(e.target.value)}
+      />
+      <label className="block">Horário:</label>
+      <input
+        type="time"
+        className="w-full p-2 border rounded"
+        onChange={(e) => setTime(e.target.value)}
+      />
+      <button
+        className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
+        onClick={sendWhatsAppMessage}
+      >
+        Enviar Mensagem no WhatsApp
+      </button>
+    </div>
+  );
+}
+
